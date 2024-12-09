@@ -17,6 +17,7 @@ return {
   end,
   lazy = false,
   keys = {
+    { '<leader>l', '', desc = '+[L]LM' },
     { '<leader>lc', '<cmd>TabnineChat<cr>', desc = '[L]LM [C]hat' },
     { '<leader>lt', '<cmd>TabnineToggle<cr>', desc = '[L]LM [T]oggle' },
     { '<leader>ls', '<cmd>TabnineStatus<cr>', desc = '[L]LM [S]tatus' },

@@ -74,5 +74,9 @@ return {
         }
       end, { desc = '[S]earch [/] in Open Files' })
     end,
+    keys = {
+      { '<leader>s', '', desc = '+[S]earch' },
+      { '<leader>f', '', desc = '+[F]ind/Grep' },
+    },
   },
 }

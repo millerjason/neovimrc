@@ -8,6 +8,7 @@ return {
       require('ibl').update { enabled = false }
     end,
     keys = {
+      { '<leader>i', '', desc = '+[I]ndent' },
       { '<Leader>ib', '<cmd>IBLToggle<cr>', desc = 'Indent lines toggle' },
     },
   },

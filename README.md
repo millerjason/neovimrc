@@ -20,7 +20,7 @@ What is in it?
 Suggested:
 
 ```bash
-sudo apt install -y gcc python3-pip python3-venv git make unzip ripgrep gzip wget curl fd-find npm
+sudo apt install -y gcc python3-pip python3-venv git make unzip ripgrep gzip wget curl fd-find npm xclip
 sudo npm install -g tree-sitter-cli
 ```
 
@@ -52,9 +52,9 @@ ln -s neovimrc nvim
 Checking overall health and options:
 
 ```
-:CheckHealth
+:checkhealth
+:Telescope vim_options
 :lua print(vim.inspect(vim.opt.XXXX))
-:set option?
 ```
 
 Beyond [which-key](https://github.com/folke/which-key.nvim), you can use the following
@@ -65,8 +65,16 @@ nvim commands to help you track down key bindings and resolve conflicts:
 :verbose nmap <C-n>   -- for normal mode
 :nmap <localleader>   -- to see leader commands
 :WhichKey             -- see above
+:lua = <expr>         -- run lua expression
 ```
 
+#### Recommended Visits
+
+```
+:help <module>           -- help for modules
+:help telescope.setup()  -- help for the setup section
+:Telescope help_tags     -- search help
+```
 
 ### References
 

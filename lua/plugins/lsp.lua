@@ -24,6 +24,7 @@ return {
       { 'j-hui/fidget.nvim', opts = {} },
 
       -- Allows extra capabilities provided by nvim-cmp
+      -- NOTE: consider replacing with blink.cmp once it moves out of "beta"
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()

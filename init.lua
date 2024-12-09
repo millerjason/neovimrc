@@ -1,7 +1,12 @@
 --  NOTE: Leader before plugins are loaded (otherwise wrong leader will be used)
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
+
+-- Add emacs/rl keybindings to this configuration?
+vim.g.neovimacs_bindings = true
+vim.g.neovimacs_insert = true
 
 -- Margins
 vim.opt.title = false -- in status, not great with tmux
@@ -40,6 +45,7 @@ else
 end
 vim.opt.wildmenu = true
 vim.opt.wildmode = 'list:longest,list:full' -- list choices, expand singles
+vim.keymap.set('n', '<leader>p', '', { desc = '[P] +Explore' })
 vim.keymap.set('n', '<leader>pv', vim.cmd.Ex, { desc = 'Open explorer [V]' })
 
 -- Search
@@ -71,6 +77,14 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('n', '<leader>td', function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { silent = true, noremap = true, desc = 'Toggle [D]iagnostics' })
+
+-- Allow 'q' to close simple diagnostic windows
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'qf', 'help', 'checkhealth' },
+  callback = function()
+    vim.keymap.set('n', 'q', '<cmd>bd<cr>', { silent = true, buffer = true })
+  end,
+})
 
 -- Highlight when yanking (copying) text - "yap"
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -104,26 +118,17 @@ require('lazy').setup({
   require 'plugins.gitsigns', -- Add git changes to gutter
   require 'plugins.which-key', -- Show keybindings as you go
   require 'plugins.telescope', -- Fuzzy finder (file & LSP search)
+  require 'plugins.lualine', -- Statusbar at bottom
   require 'plugins.lsp', -- Language server (types, errors, signatures)
   require 'plugins.conform', -- Auto-reformat files on save
   require 'plugins.venv', -- Virtual environment selection
   require 'plugins.autocomplete', -- Auto-completion
   require 'plugins.colorscheme', -- Color scheme
-  require 'plugins.misc', -- Misc small plugins
+  require 'plugins.mini', -- Misc small plugins
   require 'plugins.treesitter', -- Code highlights and reference navigation
   require 'plugins.todo', -- Highlight todo, notes in comments
-  require 'plugins.tabnine', -- Tabnine LLM coding assistant
-
-  -- Treesitter navigation
-  -- :help nvim-treesitter
-  -- :Telescope help_tags
-  -- See `:help telescope` and `:help telescope.setup()`
-  -- To see keymaps do this:
-  --  - Insert mode: <c-/>
-  --  - Normal mode: ?
-  -- Venv selector
-  -- WIP: https://github.com/linux-cultist/venv-selector.nvim/tree/regexp
-  -- Wait for a updated release
+  require 'plugins.avante', -- LLM: Cursor alternative
+  require 'plugins.tabnine', -- LLM: Tabnine coding assistant
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -169,9 +174,11 @@ vim.keymap.set('i', '<C-l>', recenter_and_refresh, { noremap = true, silent = tr
 vim.keymap.set('c', '<C-s>', '<CR>n', { expr = true })
 
 --- (Re)Undefine undesirable behavior
-vim.api.nvim_set_keymap('i', '<Esc>', '<Esc>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-a>', '<Nop>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-x>', '<Nop>', { noremap = true })
+if vim.g.neovimacs_bindings then
+  vim.api.nvim_set_keymap('i', '<Esc>', '<Esc>', { noremap = true })
+  vim.api.nvim_set_keymap('n', '<C-a>', '<Nop>', { noremap = true })
+  vim.api.nvim_set_keymap('n', '<C-x>', '<Nop>', { noremap = true })
+end
 
 -- Terminals/Shell
 -- :terminal
