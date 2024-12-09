@@ -17,11 +17,27 @@ What is in it?
 
 #### Prep
 
-Suggested:
+Neovim >= 0.10 or later is required, you may need to get it from the Neovim PPA or similar:
 
 ```bash
-sudo apt install -y gcc python3-pip python3-venv git make unzip ripgrep gzip wget curl fd-find npm xclip
+sudo add-apt-repository ppa:neovim-ppa/unstable
+sudo apt-get update
+sudo apt-get install neovim
+```
+
+Suggested Packages:
+
+```bash
+sudo apt install -y cargo gcc python3-pip python3-venv git make unzip ripgrep gzip wget curl fd-find npm xclip
 sudo npm install -g tree-sitter-cli
+```
+
+If you have an old version of NodeJS, pick up a new one:
+
+```bash
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
 ```
 
 Optional based on use-case:
