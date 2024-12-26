@@ -18,21 +18,28 @@ return {
       format_on_save = function(bufnr)
         local disable_filetypes = { c = true, cpp = true, sh = true }
         return {
-          timeout_ms = 500,
+          async = false,
+          timeout_ms = 3000,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
         }
       end,
       formatters_by_ft = {
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        css = { 'prettier' },
+        html = { 'prettier' },
+        json = { 'prettier' },
+        markdown = { 'prettier' },
         lua = { 'stylua' },
         python = {
-          'black',
           'isort',
           'ruff_format',
-          'pyright',
         },
         md = { 'prettier' },
         nix = { 'nixfmt' },
-        yaml = { 'yamlfmt' },
+        yaml = { 'prettier' },
         sh = { 'shfmt' },
       },
     },

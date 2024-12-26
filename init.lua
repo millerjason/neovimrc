@@ -56,7 +56,7 @@ vim.opt.inccommand = 'split' -- preview
 
 -- Performance
 vim.opt.updatetime = 250
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 3000
 
 -- Windows
 -- :sp/:vsp to split windows

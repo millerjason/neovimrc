@@ -13,6 +13,9 @@ return {
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+    opts = {
+      format = { timeout_ms = 3000 },
+    },
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
@@ -84,11 +87,27 @@ return {
 
       local servers = {
         clangd = {},
-        pyright = {},
-        black = {},
-        isort = {},
+        pyright = {
+          enabled = true,
+          single_file_support = true,
+          settings = {
+            python = {
+              analysis = {
+                autoSearchPaths = true,
+                diagnosticModel = 'openFilesOnly',
+                useLibraryCodeForTypes = true,
+              },
+            },
+          },
+        },
+        jedi_language_server = { enabled = false },
+        pylsp = { enabled = false },
+        mypy = { enabled = false },
+        ruff = { enabled = true },
+        black = { enabled = false },
+        isort = { enabled = false },
         taplo = {},
-        -- rust_analyzer = {},
+        rust_analyzer = {},
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -145,7 +164,9 @@ return {
           function(server_name)
             local server = servers[server_name] or {}
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            if server.enabled == true or server.enabled == nil then
+              require('lspconfig')[server_name].setup(server)
+            end
           end,
         },
       }

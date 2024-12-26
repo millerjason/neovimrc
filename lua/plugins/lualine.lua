@@ -58,7 +58,7 @@ return {
             {
               'tabnine',
               fmt = function(s)
-                if string.match(s, 'disabled') then
+                if string.match(s, 'disabled') or s == '' then
                   return '-'
                 else
                   return '⌬'
