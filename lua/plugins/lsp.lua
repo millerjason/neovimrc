@@ -30,6 +30,7 @@ return {
       -- NOTE: consider replacing with blink.cmp once it moves out of "beta"
       'hrsh7th/cmp-nvim-lsp',
     },
+    --- JCM: what "hover provider" rules do we want?
     config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
@@ -44,6 +45,8 @@ return {
           map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
           map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
           map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          -- map('n', 'gD', vim.lsp.buf.declaration, opts 'Go to declaration')
+          -- map('n', '<leader>sh', vim.lsp.buf.signature_help, opts 'Show signature help')
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -93,9 +96,14 @@ return {
           settings = {
             python = {
               analysis = {
+                autoImportCompletion = true,
                 autoSearchPaths = true,
                 diagnosticModel = 'openFilesOnly',
+                disableOrganizeImports = true,
+                extraPaths = { 'python' },
+                typeCheckingMode = 'standard',
                 useLibraryCodeForTypes = true,
+                -- venvPath = "...",
               },
             },
           },
