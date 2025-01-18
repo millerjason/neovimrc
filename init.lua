@@ -1,4 +1,5 @@
 --  NOTE: Leader before plugins are loaded (otherwise wrong leader will be used)
+-- Run "nvim -u NONE -U NONE -N -i NONE" to test with no config
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
@@ -7,6 +8,7 @@ vim.g.have_nerd_font = true
 -- Add emacs/rl keybindings to this configuration?
 vim.g.neovimacs_bindings = true
 vim.g.neovimacs_insert = true
+vim.opt.guicursor = 'n-v-i-c:block-Cursor' -- keep block cursor
 
 -- Margins
 vim.opt.title = false -- in status, not great with tmux
