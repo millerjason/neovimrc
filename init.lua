@@ -10,6 +10,9 @@ vim.g.neovimacs_bindings = true
 vim.g.neovimacs_insert = true
 vim.opt.guicursor = 'n-v-i-c:block-Cursor' -- keep block cursor
 
+-- Reformat on save?
+vim.g.disable_autoformat = false
+
 -- Margins
 vim.opt.title = false -- in status, not great with tmux
 vim.opt.number = true -- show line number
@@ -173,13 +176,14 @@ local function recenter_and_refresh()
 end
 vim.keymap.set('n', '<C-l>', recenter_and_refresh, { noremap = true, silent = true })
 vim.keymap.set('i', '<C-l>', recenter_and_refresh, { noremap = true, silent = true })
-vim.keymap.set('c', '<C-s>', '<CR>n', { expr = true })
 
 --- (Re)Undefine undesirable behavior
 if vim.g.neovimacs_bindings then
   vim.api.nvim_set_keymap('i', '<Esc>', '<Esc>', { noremap = true })
   vim.api.nvim_set_keymap('n', '<C-a>', '<Nop>', { noremap = true })
-  vim.api.nvim_set_keymap('n', '<C-x>', '<Nop>', { noremap = true })
+  vim.api.nvim_set_keymap('n', '<C-x><C-c>', ':confirm qall<CR>', { noremap = true })
+  vim.api.nvim_set_keymap('n', '<C-x><C-s>', ':update<CR>', { noremap = true })
+  vim.api.nvim_set_keymap('n', '<C-x><C-f>', ':hide edit ', { noremap = true })
 end
 
 -- Terminals/Shell
