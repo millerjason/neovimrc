@@ -111,7 +111,8 @@ local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 
 if not vim.uv.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+  -- local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+  local out = vim.fn.system { 'git', 'clone', '--branch=stable', lazyrepo, lazypath }
   if vim.v.shell_error ~= 0 then
     error('Error cloning lazy.nvim:\n' .. out)
   end
@@ -122,28 +123,34 @@ rtp:prepend(lazypath)
 
 -- :Lazy
 require('lazy').setup({
-
-  require 'plugins.indentguess', -- Detects tabstop and shiftwidth to match orig
-  require 'plugins.indent_line', -- Mark indent with vertical ruler (default as toggle off)
-  require 'plugins.neovimacs', -- Emacs-style keybindings while in insert mode
-  require 'plugins.bufferline', -- Filename header tabs
-  require 'plugins.gitsigns', -- Add git changes to gutter
-  require 'plugins.which-key', -- Show keybindings as you go
-  require 'plugins.telescope', -- Fuzzy finder (file & LSP search)
-  require 'plugins.lualine', -- Statusbar at bottom
-  require 'plugins.mason', -- Mason: LSP/DAP/Linter/Formatter installer
-  require 'plugins.conform', -- Auto-reformat files on save
-  require 'plugins.claude-code', -- LLM: Claude Code
-  require 'plugins.venv', -- Virtual environment selection
-  require 'plugins.autocomplete-blink', -- Auto-completion (new, incomplete)
-  require 'plugins.colorscheme', -- Color scheme
-  require 'plugins.mini', -- Misc small plugins
-  require 'plugins.treesitter', -- Code highlights and reference navigation
-  require 'plugins.todo', -- Highlight todo, notes in comments
-  require 'plugins.avante', -- LLM: Cursor alternative
-  require 'plugins.tabnine', -- LLM: Tabnine coding assistant
-  require 'plugins.tiny-inline-diagnostics', -- Better diagnostics
+  git = {
+    filter = false,
+  },
+  spec = {
+    require 'plugins.indentguess', -- Detects tabstop and shiftwidth to match orig
+    require 'plugins.indent_line', -- Mark indent with vertical ruler (default as toggle off)
+    require 'plugins.neovimacs', -- Emacs-style keybindings while in insert mode
+    require 'plugins.bufferline', -- Filename header tabs
+    require 'plugins.gitsigns', -- Add git changes to gutter
+    require 'plugins.which-key', -- Show keybindings as you go
+    require 'plugins.telescope', -- Fuzzy finder (file & LSP search)
+    require 'plugins.lualine', -- Statusbar at bottom
+    require 'plugins.mason', -- Mason: LSP/DAP/Linter/Formatter installer
+    require 'plugins.conform', -- Auto-reformat files on save
+    require 'plugins.claude-code', -- LLM: Claude Code
+    require 'plugins.venv', -- Virtual environment selection
+    require 'plugins.autocomplete-blink', -- Auto-completion (new, incomplete)
+    require 'plugins.colorscheme', -- Color scheme
+    require 'plugins.mini', -- Misc small plugins
+    require 'plugins.treesitter', -- Code highlights and reference navigation
+    require 'plugins.todo', -- Highlight todo, notes in comments
+    require 'plugins.tabnine', -- LLM: Tabnine coding assistant
+    require 'plugins.tiny-inline-diagnostics', -- Better diagnostics
+  },
 }, {
+  rocks = {
+    enabled = false,
+  },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table

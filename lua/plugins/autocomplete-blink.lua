@@ -172,6 +172,20 @@ return {
       luasnip.config.setup {}
 
       require('blink.cmp').setup(opts)
+
+      -- Add autocomplete toggle
+      vim.keymap.set('n', '<leader>ta', function()
+        vim.g.autocomplete_enable = not vim.g.autocomplete_enable
+        if vim.g.autocomplete_enable then
+          require('blink.cmp').setup()
+          print 'Autocomplete enabled'
+        else
+          pcall(function()
+            require('blink.cmp').clear()
+          end)
+          print 'Autocomplete disabled'
+        end
+      end, { desc = '[a]utocomplete' })
     end,
   },
 }
