@@ -30,7 +30,7 @@ Add `~/.config/nvim/result/bin` to your `PATH`.
 
 #### Prep (UNIX Standard)
 
-Neovim >= 0.10 or later is required, you may need to get it from the Neovim PPA or similar:
+Neovim >= 0.11 or later is required, you may need to get it from the Neovim PPA or similar:
 
 ```bash
 sudo add-apt-repository ppa:neovim-ppa/unstable
@@ -106,7 +106,7 @@ Run `./scripts/check_install.sh` after installing everything or building `flake.
 Inside Neovim, you might also look at:
 
 ```
-:checkhealth <tool>
+:checkhealth <tool> (e.g. :checkhealth vim.lsp)
 :TSInstallInfo
 :lua print(vim.inspect(vim.lsp.get_clients()))
 :LspInfo
