@@ -3,6 +3,10 @@ local tools = require 'utils.tools'
 -- Get LSP capabilities with cmp support
 local capabilities = tools.get_lsp_capabilities()
 
+-- Default fallback root directory
+-- local default_python_root = vim.fn.getcwd()
+local default_python_root = os.getenv 'HOME' .. '/.nix-flake/.venv'
+
 -- Setup multiple Python LSP servers using autocmd (not via vim.lsp.enable)
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'python',
@@ -23,12 +27,11 @@ vim.api.nvim_create_autocmd('FileType', {
     -- Common root directory lookup for all Python LSPs
     local current_file = vim.api.nvim_buf_get_name(0)
     local file_dir = vim.fs.dirname(current_file)
-    local root_dir = vim.fs.dirname(
-      vim.fs.find(
-        { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', 'ruff.toml', '.ruff.toml' },
-        { path = file_dir, upward = true }
-      )[1]
+    local found_files = vim.fs.find(
+      { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', 'ruff.toml', '.ruff.toml' },
+      { path = file_dir, upward = true }
     )
+    local root_dir = found_files[1] and vim.fs.dirname(found_files[1]) or default_python_root
 
     local pyright_path = tools.find_tool 'basedpyright-langserver'
     local ruff_path = tools.find_tool 'ruff'
@@ -59,7 +62,7 @@ vim.api.nvim_create_autocmd('FileType', {
             },
             pythonPath = python3_path,
             extraPaths = vim.list_extend(
-              vim.fn.isdirectory(root_dir .. '/python') == 1 and { root_dir .. '/python' } or {},
+              (root_dir and vim.fn.isdirectory(root_dir .. '/python') == 1) and { root_dir .. '/python' } or {},
               vim.split(vim.env.PYTHONPATH or '', ':')
             ),
           },

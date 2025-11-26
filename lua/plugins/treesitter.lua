@@ -36,7 +36,7 @@ return {
         'vimdoc',
         'yaml',
       },
-      auto_install = true,
+      auto_install = false,
       highlight = {
         enable = true,
         additional_vim_regex_highlighting = { 'ruby' },
@@ -44,6 +44,9 @@ return {
       indent = { enable = true, disable = { 'ruby' } },
     },
     config = function(_, opts)
+      -- parsers must be in{path}/parser/{lang}.so files
+      local parser_base_dir = os.getenv 'HOME' .. '/.config/nvim/result'
+      vim.opt.runtimepath:prepend(parser_base_dir)
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)
     end,

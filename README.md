@@ -15,9 +15,22 @@ What is in it?
 
 ## 📦 Installation
 
-#### Prep
+#### Cloning
 
-Neovim >= 0.10 or later is required, you may need to get it from the Neovim PPA or similar:
+```bash
+cd ~/.config
+git clone https://github.com/millerjason/neovimrc.git
+ln -s neovimrc nvim
+```
+
+#### Prep (UNIX Nix)
+
+Install [Nixpkgs](https://nixos.org/download/#nix-install-linux) and run `nix build` to build `flake.nix`.
+Add `~/.config/nvim/result/bin` to your `PATH`.
+
+#### Prep (UNIX Standard)
+
+Neovim >= 0.11 or later is required, you may need to get it from the Neovim PPA or similar:
 
 ```bash
 sudo add-apt-repository ppa:neovim-ppa/unstable
@@ -44,14 +57,6 @@ Optional based on use-case:
 
 ```bash
 sudo apt install -y golang luarocks cargo nodejs clang python3-pynvim
-```
-
-#### Cloning
-
-```bash
-cd ~/.config
-git clone https://github.com/millerjason/neovimrc.git
-ln -s neovimrc nvim
 ```
 
 #### Maint
@@ -92,6 +97,20 @@ Use `nvim -u NONE -U NONE -N -i NONE` to test with w/o config if things go wrong
 :help <module>           -- help for modules
 :help telescope.setup()  -- help for the setup section
 :Telescope help_tags     -- search help
+```
+
+#### Checking Installation
+
+Run `./scripts/check_install.sh` after installing everything or building `flake.nix`.
+
+Inside Neovim, you might also look at:
+
+```
+:checkhealth <tool> (e.g. :checkhealth vim.lsp)
+:TSInstallInfo
+:lua print(vim.inspect(vim.lsp.get_clients()))
+:LspInfo
+:LspLog
 ```
 
 ### References
