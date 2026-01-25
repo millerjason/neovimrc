@@ -15,6 +15,13 @@ return {
       enable_on_insert = true,
       multiple_diag_under_cursor = true,
       show_all_diags_on_cursorline = true,
+      options = {
+        show_code = true, -- NOTE: does not appear to work, so using format below
+        format = function(diagnostic)
+          local code = diagnostic.code and (' [' .. diagnostic.code .. ']') or ''
+          return diagnostic.message .. code
+        end,
+      },
       multilines = {
         enabled = false,
         always_show = true,
