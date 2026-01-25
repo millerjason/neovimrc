@@ -13,7 +13,6 @@ vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
 
 -- User settings
-vim.g.tabnine_enable = true -- JCM
 vim.g.autocomplete_enable = true
 -- vim.o.autochdir = true -- to open from buffer dir
 vim.g.format_on_save_enabled = true
@@ -144,7 +143,6 @@ require('lazy').setup({
     require 'plugins.mini', -- Misc small plugins
     require 'plugins.treesitter', -- Code highlights and reference navigation
     require 'plugins.todo', -- Highlight todo, notes in comments
-    require 'plugins.tabnine', -- LLM: Tabnine coding assistant
     require 'plugins.tiny-inline-diagnostics', -- Better diagnostics
   },
 }, {

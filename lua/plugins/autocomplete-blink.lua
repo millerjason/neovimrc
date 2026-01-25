@@ -155,13 +155,6 @@ return {
       sources = {
         default = { 'lsp', 'path', 'snippets', 'buffer' },
         per_filetype = {},
-        -- TODO: broken
-        providers = {
-          tabnine = {
-            name = 'Tabnine',
-            module = 'blink.compat.source',
-          },
-        },
       },
       snippets = {
         preset = 'luasnip',
