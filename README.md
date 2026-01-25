@@ -59,6 +59,19 @@ Optional based on use-case:
 sudo apt install -y golang luarocks cargo nodejs clang python3-pynvim
 ```
 
+#### External Tools
+
+Depending on your host, you might rely on `PATH`, brew, apt, nix, Mason, or other tools to provide
+your language servers. You might need a mix of these, so `find_tool` is provided in utils to search
+for tools.
+
+The search order is: venv → system PATH (non-mason) → {CONFIG_NAME}\_DIR → mason fallback.
+
+For the configs:
+`DEFAULT_PYTHON_ROOT` - Location of your Python virtual environment
+`TREESITTER_INSTALL_DIR` - Locations of the \*.so files for treesitter
+`TOOLS_INSTALL_DIR` - Location of a last-resort location for tools not in venv or PATH
+
 #### Maint
 
 ```

@@ -7,7 +7,7 @@ local capabilities = tools.get_lsp_capabilities()
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'c', 'cpp', 'h', 'hpp' },
   callback = function()
-    local clangd_path = tools.find_executable 'clangd'
+    local clangd_path = tools.find_tool 'clangd'
 
     if clangd_path then
       vim.lsp.start {
