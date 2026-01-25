@@ -69,6 +69,9 @@ return {
         max_typos = function()
           return 0
         end,
+        prebuilt_binaries = {
+          ignore_version_mismatch = true,
+        },
       },
       completion = {
         keyword = { range = 'full' },
@@ -158,6 +161,21 @@ return {
       sources = {
         default = { 'lsp', 'path', 'snippets', 'buffer' },
         per_filetype = {},
+        transform_items = function(_, items)
+          -- Sort to prioritize parameters/arguments over functions
+          table.sort(items, function(a, b)
+            -- Higher priority for Variable (named arguments)
+            if a.kind == 6 and b.kind ~= 6 then return true end  -- Variable
+            if b.kind == 6 and a.kind ~= 6 then return false end
+            -- Lower priority for Function/Method
+            if a.kind == 3 and b.kind ~= 3 then return false end -- Function
+            if b.kind == 3 and a.kind ~= 3 then return true end
+            if a.kind == 2 and b.kind ~= 2 then return false end -- Method
+            if b.kind == 2 and a.kind ~= 2 then return true end
+            return false
+          end)
+          return items
+        end,
       },
       snippets = {
         preset = 'luasnip',
