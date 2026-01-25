@@ -14,8 +14,8 @@ vim.g.have_nerd_font = true
 
 -- User settings
 vim.g.autocomplete_enable = true
--- vim.o.autochdir = true -- to open from buffer dir
-vim.g.format_on_save_enabled = true
+vim.o.autochdir = true -- to open from buffer dir
+vim.g.format_on_save_enabled = false
 
 -- Add emacs/rl keybindings to this configuration?
 vim.g.neovimacs_bindings = true
@@ -254,7 +254,6 @@ for _, server in ipairs(lsp_servers) do
   end
 end
 
--- Inlay hints?
-vim.lsp.inlay_hint.enable(true)
+vim.lsp.inlay_hint.enable(false)
 
 require 'utils/windows'
