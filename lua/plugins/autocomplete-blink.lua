@@ -97,6 +97,9 @@ return {
           },
         },
       },
+      enabled = function()
+        return vim.g.signature_enabled
+      end,
       keymap = {
         preset = 'default',
         -- Disable conflicting emacs keys - let neovimacs handle them
