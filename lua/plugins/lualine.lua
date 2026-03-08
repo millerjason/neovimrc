@@ -56,16 +56,6 @@ return {
             'fileformat',
             'filetype',
             {
-              'tabnine',
-              fmt = function(s)
-                if string.match(s, 'disabled') or s == '' then
-                  return '-'
-                else
-                  return '⌬'
-                end
-              end,
-            },
-            {
               function()
                 return vim.g.format_on_save_enabled and '󰸱' or ''
               end,

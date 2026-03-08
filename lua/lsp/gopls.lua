@@ -7,7 +7,7 @@ local capabilities = tools.get_lsp_capabilities()
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'go',
   callback = function()
-    local gopls_path = tools.find_executable 'gopls'
+    local gopls_path = tools.find_tool 'gopls'
 
     if gopls_path then
       vim.lsp.start {

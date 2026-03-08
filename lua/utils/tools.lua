@@ -1,5 +1,10 @@
 local M = {}
 
+--  Search order: venv → system PATH (non-mason) → TOOLS_INSTALL_DIR → mason fallback.
+
+-- Configuration
+local TOOLS_INSTALL_DIR = os.getenv 'TOOLS_INSTALL_DIR' or (vim.fn.expand '~/.local/share/tools')
+
 -- Helper function to find the executable in path, prioritizing non-mason paths
 function M.find_executable(executable)
   -- First try with PATH environment variable
@@ -60,6 +65,34 @@ function M.get_python_venv_path()
   return nil
 end
 
+-- Helper function to recursively search for tool in directory (max depth 3)
+local function search_tool_in_dir(dir, tool_name, current_depth)
+  if current_depth > 3 then
+    return nil
+  end
+
+  -- Check direct path
+  local tool_path = dir .. '/' .. tool_name
+  if vim.fn.filereadable(tool_path) == 1 and vim.fn.executable(tool_path) == 1 then
+    return tool_path
+  end
+
+  -- Check subdirectories
+  if current_depth < 3 then
+    local entries = vim.fn.globpath(dir, '*', false, true)
+    for _, entry in ipairs(entries) do
+      if vim.fn.isdirectory(entry) == 1 then
+        local found = search_tool_in_dir(entry, tool_name, current_depth + 1)
+        if found then
+          return found
+        end
+      end
+    end
+  end
+
+  return nil
+end
+
 -- Helper function to find executable in both venv and system PATH
 function M.find_tool(tool_name)
   -- First check virtual env path
@@ -71,8 +104,23 @@ function M.find_tool(tool_name)
     end
   end
 
-  -- Fall back to executable in PATH
-  return M.find_executable(tool_name)
+  -- Second, try system PATH (non-mason)
+  local path_tool = M.find_executable(tool_name)
+  if path_tool then
+    return path_tool
+  end
+
+  -- Third, check TOOLS_INSTALL_DIR
+  if vim.fn.isdirectory(TOOLS_INSTALL_DIR) == 1 then
+    local tool_in_dir = search_tool_in_dir(TOOLS_INSTALL_DIR, tool_name, 1)
+    if tool_in_dir then
+      return tool_in_dir
+    end
+  end
+
+  -- Final fallback to mason (if available)
+  local mason_path = vim.fn.exepath(tool_name)
+  return mason_path ~= '' and mason_path or nil
 end
 
 -- Get LSP capabilities with cmp support

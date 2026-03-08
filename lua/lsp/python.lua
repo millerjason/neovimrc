@@ -4,8 +4,7 @@ local tools = require 'utils.tools'
 local capabilities = tools.get_lsp_capabilities()
 
 -- Default fallback root directory
--- local default_python_root = vim.fn.getcwd()
-local default_python_root = os.getenv 'HOME' .. '/.nix-flake/.venv'
+local default_python_root = os.getenv 'DEFAULT_PYTHON_ROOT' or os.getenv 'HOME' .. '/.nix-flake/.venv'
 
 -- Setup multiple Python LSP servers using autocmd (not via vim.lsp.enable)
 vim.api.nvim_create_autocmd('FileType', {
@@ -28,10 +27,21 @@ vim.api.nvim_create_autocmd('FileType', {
     local current_file = vim.api.nvim_buf_get_name(0)
     local file_dir = vim.fs.dirname(current_file)
     local found_files = vim.fs.find(
-      { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', 'ruff.toml', '.ruff.toml' },
+      { 'pyproject.toml', 'setup.py', 'setup.cfg', '.venv', 'venv', 'requirements.txt', 'ruff.toml', 'uv.lock' },
       { path = file_dir, upward = true }
     )
-    local root_dir = found_files[1] and vim.fs.dirname(found_files[1]) or default_python_root
+    local root_dir = found_files[1] and vim.fs.dirname(found_files[1])
+
+    -- Nothing python specific, but maybe the git workspace
+    if not root_dir then
+      local git_found = vim.fs.find('.git', { path = file_dir, upward = true })
+      root_dir = git_found[1] and vim.fs.dirname(git_found[1])
+    end
+
+    -- Fallback to user defined default
+    if not root_dir then
+      root_dir = default_python_root
+    end
 
     local pyright_path = tools.find_tool 'basedpyright-langserver'
     local ruff_path = tools.find_tool 'ruff'
@@ -117,6 +127,7 @@ vim.api.nvim_create_autocmd('FileType', {
     end
   end,
 })
+
 
 -- Return empty config since we handle Python LSP manually via autocmd above
 return {}

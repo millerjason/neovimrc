@@ -13,10 +13,10 @@ vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
 
 -- User settings
-vim.g.tabnine_enable = true -- JCM
 vim.g.autocomplete_enable = true
--- vim.o.autochdir = true -- to open from buffer dir
-vim.g.format_on_save_enabled = true
+vim.o.autochdir = true -- to open from buffer dir
+vim.g.format_on_save_enabled = false
+vim.g.signature_enabled = true
 
 -- Add emacs/rl keybindings to this configuration?
 vim.g.neovimacs_bindings = true
@@ -144,7 +144,6 @@ require('lazy').setup({
     require 'plugins.mini', -- Misc small plugins
     require 'plugins.treesitter', -- Code highlights and reference navigation
     require 'plugins.todo', -- Highlight todo, notes in comments
-    require 'plugins.tabnine', -- LLM: Tabnine coding assistant
     require 'plugins.tiny-inline-diagnostics', -- Better diagnostics
   },
 }, {
@@ -256,7 +255,6 @@ for _, server in ipairs(lsp_servers) do
   end
 end
 
--- Inlay hints?
-vim.lsp.inlay_hint.enable(true)
+vim.lsp.inlay_hint.enable(false)
 
 require 'utils/windows'

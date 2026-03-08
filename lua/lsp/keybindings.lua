@@ -20,7 +20,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- LSP gr
     map('grn', vim.lsp.buf.rename, '[R]e[n]ame') -- rename
-    map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
+    map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction')
     map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
     map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
     map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition') -- func def
@@ -66,3 +66,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
 vim.keymap.set('n', '<leader>td', function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { silent = true, noremap = true, desc = '[d]iagnostics' })
+
+vim.keymap.set('n', '<leader>ts', function()
+  if vim.g.signature_enabled then
+    vim.g.signature_enabled = false
+    print('Signature help: disabled')
+  else
+    vim.g.signature_enabled = true
+    print('Signature help: enabled')
+  end
+end, { desc = '[s]ignature help' })
