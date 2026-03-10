@@ -4,7 +4,7 @@ local tools = require 'utils.tools'
 local capabilities = tools.get_lsp_capabilities()
 
 -- Default fallback root directory
-local default_python_root = os.getenv 'DEFAULT_PYTHON_ROOT' or os.getenv 'HOME' .. '/.nix-flake/.venv'
+local default_python_root = os.getenv 'DEFAULT_PYTHON_ROOT' or (vim.fn.expand '~' .. '/.nix-flake/.venv')
 
 -- Set to false to see basedpyright "file/directory does not exist" messages
 vim.g.suppress_pyright_dir_errors = true
@@ -75,7 +75,7 @@ vim.api.nvim_create_autocmd('FileType', {
             pythonPath = python3_path,
             extraPaths = vim.list_extend(
               (root_dir and vim.fn.isdirectory(root_dir .. '/python') == 1) and { root_dir .. '/python' } or {},
-              vim.split(vim.env.PYTHONPATH or '', ':')
+              vim.split(vim.env.PYTHONPATH or '', tools.is_windows and ';' or ':')
             ),
           },
           python = {

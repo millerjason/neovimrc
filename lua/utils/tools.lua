@@ -2,18 +2,34 @@ local M = {}
 
 --  Search order: venv → system PATH (non-mason) → TOOLS_INSTALL_DIR → mason fallback.
 
+-- Platform detection
+M.is_windows = vim.fn.has 'win32' == 1 or vim.fn.has 'win64' == 1
+M.path_sep = M.is_windows and '\\' or '/'
+M.path_list_sep = M.is_windows and ';' or ':'
+M.home = vim.fn.expand '~'
+
 -- Configuration
-local TOOLS_INSTALL_DIR = os.getenv 'TOOLS_INSTALL_DIR' or (vim.fn.expand '~/.local/share/tools')
+local TOOLS_INSTALL_DIR = os.getenv 'TOOLS_INSTALL_DIR' or (M.home .. M.path_sep .. '.local' .. M.path_sep .. 'share' .. M.path_sep .. 'tools')
 
 -- Helper function to find the executable in path, prioritizing non-mason paths
 function M.find_executable(executable)
+  -- On Windows, also search for .exe/.cmd/.bat variants
+  local names = { executable }
+  if M.is_windows then
+    table.insert(names, executable .. '.exe')
+    table.insert(names, executable .. '.cmd')
+    table.insert(names, executable .. '.bat')
+  end
+
   -- First try with PATH environment variable
-  local paths = vim.split(vim.env.PATH, ':', { plain = true })
+  local paths = vim.split(vim.env.PATH, M.path_list_sep, { plain = true })
   for _, dir in ipairs(paths) do
     if dir ~= '' and not string.find(dir, 'mason') then
-      local path = dir .. '/' .. executable
-      if vim.fn.filereadable(path) == 1 and vim.fn.executable(path) == 1 then
-        return path
+      for _, name in ipairs(names) do
+        local path = dir .. M.path_sep .. name
+        if vim.fn.filereadable(path) == 1 and vim.fn.executable(path) == 1 then
+          return path
+        end
       end
     end
   end
@@ -48,9 +64,10 @@ function M.get_python_venv_path()
   -- Check each search path for .venv
   for _, path in ipairs(search_paths) do
     if path then
-      local venv_path = path .. '/.venv'
+      local venv_path = path .. M.path_sep .. '.venv'
+      local venv_bin = M.is_windows and 'Scripts' or 'bin'
       if vim.fn.isdirectory(venv_path) == 1 then
-        return venv_path .. '/bin'
+        return venv_path .. M.path_sep .. venv_bin
       end
     end
   end
@@ -58,7 +75,8 @@ function M.get_python_venv_path()
   -- Check for VIRTUAL_ENV environment variable (set by direnv or manually)
   local virtual_env = vim.env.VIRTUAL_ENV
   if virtual_env and virtual_env ~= '' then
-    return virtual_env .. '/bin'
+    local venv_bin = M.is_windows and 'Scripts' or 'bin'
+    return virtual_env .. M.path_sep .. venv_bin
   end
 
   -- Default to system path
@@ -72,7 +90,7 @@ local function search_tool_in_dir(dir, tool_name, current_depth)
   end
 
   -- Check direct path
-  local tool_path = dir .. '/' .. tool_name
+  local tool_path = dir .. M.path_sep .. tool_name
   if vim.fn.filereadable(tool_path) == 1 and vim.fn.executable(tool_path) == 1 then
     return tool_path
   end
@@ -98,7 +116,7 @@ function M.find_tool(tool_name)
   -- First check virtual env path
   local venv_path = M.get_python_venv_path()
   if venv_path then
-    local tool_path = venv_path .. '/' .. tool_name
+    local tool_path = venv_path .. M.path_sep .. tool_name
     if vim.fn.filereadable(tool_path) == 1 then
       return tool_path
     end

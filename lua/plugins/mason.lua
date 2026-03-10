@@ -9,7 +9,8 @@ return {
       local mason_bin = vim.fn.stdpath 'data' .. '/mason/bin'
       local current_path = vim.env.PATH or ''
       if not string.find(current_path, mason_bin, 1, true) then
-        vim.env.PATH = mason_bin .. ':' .. current_path
+        local sep = (vim.fn.has 'win32' == 1 or vim.fn.has 'win64' == 1) and ';' or ':'
+        vim.env.PATH = mason_bin .. sep .. current_path
       end
 
       -- Auto-cleanup unused packages (add when deprecating packages)
@@ -86,7 +87,7 @@ return {
       -- Other tools
       local other_tools = {
         -- Formatters
-        'alejandra', -- nix
+        vim.fn.executable 'nix' == 1 and 'alejandra' or nil, -- nix (skip on Windows/WSL)
         'ast-grep',
         'clang-format',
         'cmakelang',
