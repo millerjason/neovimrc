@@ -33,14 +33,13 @@ LSP_SERVERS=(
     "lua-language-server"
     "bash-language-server"
     "marksman"
-    "basedpyright"
+    "basedpyright-langserver"
     "taplo"
     "yaml-language-server"
     "typescript-language-server"
     "docker-langserver"
     "gopls"
-    "nil"
-    "jedi-language-server"
+    "nixd"
     "ruff"
 )
 

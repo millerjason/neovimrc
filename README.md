@@ -59,6 +59,14 @@ Optional based on use-case:
 sudo apt install -y golang luarocks cargo nodejs clang python3-pynvim
 ```
 
+#### Keybindings
+
+See [keybindings.md](keybindings.md) for all custom keybindings.
+
+#### LSP Servers
+
+See [lua/lsp/README.md](lua/lsp/README.md) for configured language servers and their nixpkgs packages.
+
 #### External Tools
 
 Depending on your host, you might rely on `PATH`, brew, apt, nix, Mason, or other tools to provide

@@ -123,12 +123,17 @@ function M.find_tool(tool_name)
   return mason_path ~= '' and mason_path or nil
 end
 
--- Get LSP capabilities with cmp support
+-- Get LSP capabilities with completion support (blink.cmp or nvim-cmp)
 function M.get_lsp_capabilities()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  local ok, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
+  local ok, blink = pcall(require, 'blink.cmp')
   if ok then
-    capabilities = vim.tbl_deep_extend('force', capabilities, cmp_nvim_lsp.default_capabilities())
+    capabilities = blink.get_lsp_capabilities(capabilities)
+  else
+    local cmp_ok, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
+    if cmp_ok then
+      capabilities = vim.tbl_deep_extend('force', capabilities, cmp_nvim_lsp.default_capabilities())
+    end
   end
   return capabilities
 end

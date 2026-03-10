@@ -75,7 +75,6 @@ return {
         'bashls', -- bash-language-server
         'dockerls', -- dockerfile-language-server
         -- 'gopls', -- go
-        'jedi_language_server',
         'lua_ls', -- lua-language-server
         'marksman',
         'rust_analyzer',

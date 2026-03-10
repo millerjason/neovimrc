@@ -1,13 +1,10 @@
--- Get LSP capabilities with cmp support
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
-if ok then
-  capabilities = vim.tbl_deep_extend('force', capabilities, cmp_nvim_lsp.default_capabilities())
-end
+local tools = require 'utils.tools'
+
+local capabilities = tools.get_lsp_capabilities()
 
 return {
   name = 'yamlls',
-  cmd = { 'yaml-language-server', '--stdio' },
+  cmd = { tools.find_tool 'yaml-language-server' or 'yaml-language-server', '--stdio' },
   filetypes = { 'yaml', 'yml' },
   root_dir = vim.fs.dirname(vim.fs.find({ '.git', 'docker-compose.yml', 'docker-compose.yaml' }, { upward = true })[1]),
   capabilities = capabilities,

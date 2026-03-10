@@ -223,6 +223,18 @@ vim.diagnostic.config { virtual_text = false }
 --  severity_sort = true,
 --}
 
+-- Hide diagnostics in insert mode, show in normal mode
+vim.api.nvim_create_autocmd('InsertEnter', {
+  callback = function()
+    vim.diagnostic.enable(false, { bufnr = 0 })
+  end,
+})
+vim.api.nvim_create_autocmd('InsertLeave', {
+  callback = function()
+    vim.diagnostic.enable(true, { bufnr = 0 })
+  end,
+})
+
 -- Register and enable LSP servers
 -- See https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/configs
 -- for sample starter configurations.
@@ -243,7 +255,7 @@ if vim.fn.executable 'go' == 1 then
   table.insert(lsp_servers, 'gopls')
 end
 if vim.fn.executable 'nixd' == 1 then
-  table.insert(lsp_servers, 'nil_ls')
+  table.insert(lsp_servers, 'nixd')
 end
 
 require 'lsp/keybindings'
@@ -251,7 +263,7 @@ for _, server in ipairs(lsp_servers) do
   local ok, config = pcall(require, 'lsp.' .. server)
   if ok and config.name then
     vim.lsp.config[config.name] = config
-    vim.lsp.enable(server)
+    vim.lsp.enable(config.name)
   end
 end
 
