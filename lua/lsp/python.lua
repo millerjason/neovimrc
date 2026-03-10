@@ -4,7 +4,10 @@ local tools = require 'utils.tools'
 local capabilities = tools.get_lsp_capabilities()
 
 -- Default fallback root directory
-local default_python_root = os.getenv 'DEFAULT_PYTHON_ROOT' or os.getenv 'HOME' .. '/.nix-flake/.venv'
+local default_python_root = os.getenv 'DEFAULT_PYTHON_ROOT' or (vim.fn.expand '~' .. '/.nix-flake/.venv')
+
+-- Set to false to see basedpyright "file/directory does not exist" messages
+vim.g.suppress_pyright_dir_errors = true
 
 -- Setup multiple Python LSP servers using autocmd (not via vim.lsp.enable)
 vim.api.nvim_create_autocmd('FileType', {
@@ -45,8 +48,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
     local pyright_path = tools.find_tool 'basedpyright-langserver'
     local ruff_path = tools.find_tool 'ruff'
-    local jedi_path = tools.find_tool 'jedi-language-server'
-    local python3_path = tools.find_tool 'python3'
+    local python3_path = tools.find_tool 'python3' or tools.find_tool 'python'
 
     -- Setup pyright (hover and type checking)
     -- https://docs.basedpyright.com/dev/
@@ -73,12 +75,21 @@ vim.api.nvim_create_autocmd('FileType', {
             pythonPath = python3_path,
             extraPaths = vim.list_extend(
               (root_dir and vim.fn.isdirectory(root_dir .. '/python') == 1) and { root_dir .. '/python' } or {},
-              vim.split(vim.env.PYTHONPATH or '', ':')
+              vim.split(vim.env.PYTHONPATH or '', tools.is_windows and ';' or ':')
             ),
+          },
+          python = {
+            pythonPath = python3_path,
           },
         },
         handlers = {
           ['textDocument/publishDiagnostics'] = function() end,
+          ['window/showMessage'] = function(_, result, ...)
+            if vim.g.suppress_pyright_dir_errors and result and result.message and result.message:match 'file/directory does not exist' then
+              return
+            end
+            vim.lsp.handlers['window/showMessage'](_, result, ...)
+          end,
         },
       }
     end
@@ -97,31 +108,6 @@ vim.api.nvim_create_autocmd('FileType', {
         handlers = {
           ['textDocument/hover'] = function() end,
           ['textDocument/completion'] = function() end,
-        },
-      }
-    end
-
-    -- Setup jedi language server (completions)
-    if jedi_path then
-      local jedi_capabilities = vim.tbl_deep_extend('force', capabilities, {})
-      jedi_capabilities.hoverProvider = false
-
-      vim.lsp.start {
-        name = 'jedi_language_server',
-        cmd = { jedi_path },
-        root_dir = root_dir,
-        capabilities = jedi_capabilities,
-        init_options = {
-          diagnostics = {
-            enable = false,
-            didOpen = false,
-            didChange = false,
-            didSave = false,
-          },
-        },
-        handlers = {
-          ['textDocument/publishDiagnostics'] = function() end,
-          ['textDocument/hover'] = function() end,
         },
       }
     end

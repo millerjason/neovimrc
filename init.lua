@@ -19,8 +19,10 @@ vim.g.format_on_save_enabled = false
 vim.g.signature_enabled = true
 
 -- Add emacs/rl keybindings to this configuration?
-vim.g.neovimacs_bindings = true
-vim.g.neovimacs_insert = true
+-- Set NVIM_NO_EMACS=1 to disable normal mode emacs bindings
+-- Set NVIM_NO_EMACS_INSERT=1 to disable insert mode emacs bindings
+vim.g.neovimacs_bindings = not vim.env.NVIM_NO_EMACS
+vim.g.neovimacs_insert = not vim.env.NVIM_NO_EMACS_INSERT
 
 -- Margins
 vim.o.title = false -- in status, not great with tmux
@@ -34,8 +36,13 @@ vim.o.colorcolumn = '120'
 vim.o.guicursor = 'n-v-i-c:block-Cursor' -- keep block cursor
 -- vim.o.breakindent = true
 
--- TODO: replace with osc52 provider once iTerm2 supports it better
-if vim.env.DISPLAY then
+-- Clipboard: Windows has native support, Unix needs xclip with DISPLAY
+if vim.fn.has 'win32' == 1 or vim.fn.has 'wsl' == 1 then
+  vim.schedule(function()
+    vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
+  end)
+  vim.o.mouse = 'nvi'
+elseif vim.env.DISPLAY then
   if vim.fn.executable 'xclip' == 1 then
     vim.schedule(function()
       vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
@@ -49,7 +56,7 @@ vim.o.swapfile = false
 vim.o.backup = false
 vim.o.writebackup = false
 vim.o.undofile = true
-vim.o.undodir = os.getenv 'HOME' .. '/.vim/undodir'
+vim.o.undodir = vim.fn.expand '~/.vim/undodir'
 if vim.fn.has 'win32' == 1 or vim.fn.has 'win64' == 1 then
   vim.o.fileformats = 'dos,unix,mac'
 elseif vim.fn.has 'mac' == 1 then
@@ -223,6 +230,18 @@ vim.diagnostic.config { virtual_text = false }
 --  severity_sort = true,
 --}
 
+-- Hide diagnostics in insert mode, show in normal mode
+vim.api.nvim_create_autocmd('InsertEnter', {
+  callback = function()
+    vim.diagnostic.enable(false, { bufnr = 0 })
+  end,
+})
+vim.api.nvim_create_autocmd('InsertLeave', {
+  callback = function()
+    vim.diagnostic.enable(true, { bufnr = 0 })
+  end,
+})
+
 -- Register and enable LSP servers
 -- See https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/configs
 -- for sample starter configurations.
@@ -243,7 +262,7 @@ if vim.fn.executable 'go' == 1 then
   table.insert(lsp_servers, 'gopls')
 end
 if vim.fn.executable 'nixd' == 1 then
-  table.insert(lsp_servers, 'nil_ls')
+  table.insert(lsp_servers, 'nixd')
 end
 
 require 'lsp/keybindings'
@@ -251,7 +270,7 @@ for _, server in ipairs(lsp_servers) do
   local ok, config = pcall(require, 'lsp.' .. server)
   if ok and config.name then
     vim.lsp.config[config.name] = config
-    vim.lsp.enable(server)
+    vim.lsp.enable(config.name)
   end
 end
 

@@ -67,12 +67,8 @@ vim.keymap.set('n', '<leader>td', function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { silent = true, noremap = true, desc = '[d]iagnostics' })
 
+-- TODO: blink.cmp doesn't support runtime signature toggle yet (upstream feature request)
 vim.keymap.set('n', '<leader>ts', function()
-  if vim.g.signature_enabled then
-    vim.g.signature_enabled = false
-    print('Signature help: disabled')
-  else
-    vim.g.signature_enabled = true
-    print('Signature help: enabled')
-  end
+  vim.g.signature_enabled = not vim.g.signature_enabled
+  print('Signature help: ' .. (vim.g.signature_enabled and 'enabled' or 'disabled') .. ' (requires restart)')
 end, { desc = '[s]ignature help' })

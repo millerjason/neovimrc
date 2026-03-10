@@ -1,14 +1,11 @@
--- Get LSP capabilities with cmp support
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
-if ok then
-  capabilities = vim.tbl_deep_extend('force', capabilities, cmp_nvim_lsp.default_capabilities())
-end
+local tools = require 'utils.tools'
+
+local capabilities = tools.get_lsp_capabilities()
 
 -- Lua LSP configuration for vim.lsp.enable()
 return {
   name = 'lua_ls',
-  cmd = { 'lua-language-server' },
+  cmd = { tools.find_tool 'lua-language-server' or 'lua-language-server' },
   filetypes = { 'lua' },
   root_dir = vim.fs.dirname(vim.fs.find({ '.luarc.json', '.luarc.jsonc', '.stylua.toml', 'stylua.toml', 'selene.toml' }, { upward = true })[1]),
   capabilities = capabilities,

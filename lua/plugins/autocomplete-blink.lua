@@ -7,8 +7,6 @@ return {
     -- branch = 'fuzzy-scoring',
     -- commit = 'b9cca35c503f6d220b1162e604e06477db02a23c',
     version = 'v1.*',
-    branch = 'main',
-    commit = '2c3d276',
     event = 'InsertEnter',
     enabled = function()
       return vim.g.autocomplete_enable
@@ -64,8 +62,7 @@ return {
       fuzzy = {
         implementation = 'lua', -- slower, more flexible, patchable
         sorts = { 'exact', 'score', 'sort_text' },
-        use_frecency = false,
-        use_proximity = false,
+        -- use_frecency and use_proximity removed in blink v1; now controlled via sorts above
         max_typos = function()
           return 0
         end,
@@ -100,9 +97,6 @@ return {
           },
         },
       },
-      enabled = function()
-        return vim.g.signature_enabled
-      end,
       keymap = {
         preset = 'default',
         -- Disable conflicting emacs keys - let neovimacs handle them
@@ -162,6 +156,7 @@ return {
         default = { 'lsp', 'path', 'snippets', 'buffer' },
         per_filetype = {},
         transform_items = function(_, items)
+          if not vim.g.autocomplete_enable then return {} end
           -- Sort to prioritize parameters/arguments over functions
           table.sort(items, function(a, b)
             -- Higher priority for Variable (named arguments)
@@ -187,18 +182,10 @@ return {
 
       require('blink.cmp').setup(opts)
 
-      -- Add autocomplete toggle
+      -- Add autocomplete toggle (blink's enabled callback reads this dynamically)
       vim.keymap.set('n', '<leader>ta', function()
         vim.g.autocomplete_enable = not vim.g.autocomplete_enable
-        if vim.g.autocomplete_enable then
-          require('blink.cmp').setup()
-          print 'Autocomplete enabled'
-        else
-          pcall(function()
-            require('blink.cmp').clear()
-          end)
-          print 'Autocomplete disabled'
-        end
+        print('Autocomplete: ' .. (vim.g.autocomplete_enable and 'enabled' or 'disabled'))
       end, { desc = '[a]utocomplete' })
     end,
   },

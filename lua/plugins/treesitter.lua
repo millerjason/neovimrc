@@ -45,7 +45,7 @@ return {
     },
     config = function(_, opts)
       -- parsers must be in{path}/parser/{lang}.so files
-      local parser_base_dir = os.getenv('TREESITTER_INSTALL_DIR') or (os.getenv('HOME') .. '/.config/nvim/result')
+      local parser_base_dir = os.getenv('TREESITTER_INSTALL_DIR') or (vim.fn.expand '~/.config/nvim/result')
       vim.opt.runtimepath:prepend(parser_base_dir)
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)

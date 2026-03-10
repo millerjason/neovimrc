@@ -1,9 +1,10 @@
+local tools = require 'utils.tools'
+
 return {
-  cmd = { 'ast-grep', 'lsp' },
+  name = 'ast_grep',
+  cmd = { tools.find_tool 'ast-grep' or 'ast-grep', 'lsp' },
   filetypes = { 'java', 'javascript', 'html' },
-  root_dir = function(fname)
-    return require('lspconfig.util').find_git_ancestor(fname) or vim.fn.getcwd()
-  end,
+  root_dir = vim.fs.dirname(vim.fs.find({ '.git' }, { upward = true })[1]) or vim.fn.getcwd(),
   settings = {
     ['ast-grep'] = {
       enable = true,
