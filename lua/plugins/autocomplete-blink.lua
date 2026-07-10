@@ -60,7 +60,7 @@ return {
         },
       },
       fuzzy = {
-        implementation = 'lua', -- slower, more flexible, patchable
+        implementation = 'prefer_rust',
         sorts = { 'exact', 'score', 'sort_text' },
         -- use_frecency and use_proximity removed in blink v1; now controlled via sorts above
         max_typos = function()
