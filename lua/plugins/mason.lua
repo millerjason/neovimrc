@@ -21,7 +21,7 @@ return {
           'black',
           'mypy',
           'pyright',
-          'nixpkgs-fmt',
+          'alejandra',
           'python-lsp-server',
           'pyflakes',
           'pylint',
@@ -87,7 +87,7 @@ return {
       -- Other tools
       local other_tools = {
         -- Formatters
-        vim.fn.executable 'nix' == 1 and 'alejandra' or nil, -- nix (skip on Windows/WSL)
+        vim.fn.executable 'nix' == 1 and 'nixpkgs-fmt' or nil, -- nix (skip on Windows/WSL)
         'ast-grep',
         'clang-format',
         'cmakelang',

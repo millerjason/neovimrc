@@ -2,7 +2,7 @@
   description = "Neovim configuration with all required dependencies";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -26,7 +26,7 @@
         taplo
         yaml-language-server
         typescript-language-server
-        dockerfile-language-server-nodejs
+        dockerfile-language-server
 
         # Conditional LSP servers
         gopls
@@ -40,11 +40,11 @@
       # Formatters and linters
       formattersLinters = with pkgs; [
         # From conform.lua and mason.lua
-        alejandra # Nix formatter
+        nixpkgs-fmt # Nix formatter
         clang-tools # clang-format
         cmake-format
         isort
-        nodePackages.prettier
+        prettier
         ruff
         shfmt
         stylua
@@ -182,6 +182,7 @@
       apps.default = {
         type = "app";
         program = "${self.packages.${system}.default}/bin/nvim";
+        meta.description = "Neovim with all configured LSP servers, formatters, and tools";
       };
     });
 }

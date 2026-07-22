@@ -61,7 +61,7 @@ return {
         -- php = { 'php-cs-fixer' },
         markdown = { 'prettier' },
         md = { 'prettier' },
-        nix = vim.fn.executable 'alejandra' == 1 and { 'alejandra' } or {},
+        nix = vim.fn.executable 'nixpkgs-fmt' == 1 and { 'nixpkgs-fmt' } or {},
         python = { 'isort', 'ruff_format' },
         -- r = { 'air' },
         sh = { 'shfmt' },

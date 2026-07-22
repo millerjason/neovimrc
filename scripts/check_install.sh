@@ -45,7 +45,7 @@ LSP_SERVERS=(
 
 # Formatters and linters from flake.nix
 FORMATTERS_LINTERS=(
-    "alejandra"
+    "nixpkgs-fmt"
     "clang-format"
     "cmake-format"
     "isort"
